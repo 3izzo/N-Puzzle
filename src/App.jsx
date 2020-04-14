@@ -9,14 +9,11 @@ import { GameFactory } from '@Elements';
 export default class App extends PureComponent {
   render() {
     return (
-      <BrowserRouter>
-        <GameFactory>
-          <div className="app">
-            <Route exact path="/" component={Home} />
-            {/* <Route exact path="/" render={() => <Redirect to="/3" />} /> */}
-          </div>
-        </GameFactory>
-      </BrowserRouter>
+      <GameFactory>
+        <div className="app">
+          <Home />
+        </div>
+      </GameFactory>
     );
   }
 }
