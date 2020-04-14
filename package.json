@@ -1,9 +1,11 @@
 {
+  "homepage": "https://3izzo.github.io/N-Puzzle",
   "name": "15puzzle",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "deploy": "yarn build&& gh-pages -d dist",
     "start": "parcel index.html",
     "build": "parcel build index.html --public-url ./"
   },
@@ -30,6 +32,7 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-styled-components": "^1.8.0",
+    "gh-pages": "^2.2.0",
     "react-hot-loader": "^4.3.12",
     "sass": "^1.15.0"
   }
