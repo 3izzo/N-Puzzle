@@ -44545,7 +44545,6 @@ IDS.prototype.execute = function () {
   var result;
 
   while (true) {
-    console.log(result);
     var dfs = void 0;
     if (!this.hasVisitList) dfs = new _DFS.default(this.initial, this.goal, this.empty, i, this.maxItration - (result && result.numberOfGoalTests ? result.numberOfGoalTests : 0));else dfs = new _DFSCustom.default(this.initial, this.goal, this.empty, i, this.maxItration - (result && result.numberOfGoalTests ? result.numberOfGoalTests : 0));
     i += this.delta;
@@ -44560,6 +44559,7 @@ IDS.prototype.execute = function () {
       result.numberOfNodesDroppedByVisit += res.numberOfNodesDroppedByVisit;
       result.numberOfGoalTests += res.numberOfGoalTests;
       result.totalTime = Date.now() - timeStart;
+      if (result.numberOfGoalTests >= this.maxItration) return result;
     } // console.log(res.path);
 
     if (res.path) return res;
@@ -46659,7 +46659,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58500" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59649" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
