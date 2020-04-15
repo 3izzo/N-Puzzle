@@ -44265,13 +44265,14 @@ var _SolverNode = _interopRequireDefault(require("./SolverNode.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function InformedSearch(initial, goal, empty) {
+function InformedSearch(initial, goal, empty, maxItration) {
   this.idCounter = BigInt(0);
   this.numberOfExpandedNodes = 0;
   this.numberOfNodesDroppedByVisit = 0;
   this.initial = initial;
   this.goal = goal;
   this.empty = empty;
+  this.maxItration = maxItration;
   this.hasVisitList = true;
   this.queue = new _jsPriorityQueue.default({
     comparator: function comparator(a, b) {
@@ -44316,10 +44317,19 @@ InformedSearch.prototype.execute = function () {
       };
     }
 
+    if (numberOfGoalTests == this.maxItration) break;
     this.expandNode(current);
   }
 
-  return this;
+  return {
+    maxSize: maxSize,
+    visitedSize: this.visited.length,
+    maxQueueSize: maxQueueSize,
+    numberOfExpandedNodes: this.numberOfExpandedNodes,
+    numberOfNodesDroppedByVisit: this.numberOfNodesDroppedByVisit,
+    numberOfGoalTests: numberOfGoalTests,
+    totalTime: Date.now() - timeStart
+  };
 };
 
 InformedSearch.prototype.expandNode = function (node) {
@@ -44377,8 +44387,8 @@ var _InformedSearch = _interopRequireDefault(require("./InformedSearch.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var AStar = function AStar(initial, goal, empty) {
-  _InformedSearch.default.call(this, initial, goal, empty);
+var AStar = function AStar(initial, goal, empty, maxItration) {
+  _InformedSearch.default.call(this, initial, goal, empty, maxItration);
 };
 
 AStar.prototype = Object.create(_InformedSearch.default.prototype);
@@ -44403,8 +44413,8 @@ var _InformedSearch = _interopRequireDefault(require("./InformedSearch.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DFS = function DFS(initial, goal, empty, maxDepth) {
-  _InformedSearch.default.call(this, initial, goal, empty);
+var DFS = function DFS(initial, goal, empty, maxDepth, maxItration) {
+  _InformedSearch.default.call(this, initial, goal, empty, maxItration);
 
   this.maxDepth = maxDepth;
   this.queue = new _jsPriorityQueue.default({
@@ -44448,8 +44458,8 @@ var _SolverNode = _interopRequireDefault(require("./SolverNode.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DFSCustomVisitList = function DFSCustomVisitList(initial, goal, empty, maxDepth) {
-  _InformedSearch.default.call(this, initial, goal, empty);
+var DFSCustomVisitList = function DFSCustomVisitList(initial, goal, empty, maxDepth, maxItration) {
+  _InformedSearch.default.call(this, initial, goal, empty, maxItration);
 
   this.maxDepth = maxDepth;
   this.queue = new _jsPriorityQueue.default({
@@ -44508,12 +44518,13 @@ var _DFSCustom = _interopRequireDefault(require("./DFSCustom"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function IDS(initial, goal, empty, delta, hasVisitList) {
+function IDS(initial, goal, empty, delta, hasVisitList, maxItration) {
   this.initial = initial;
   this.goal = goal;
   this.empty = empty;
   this.delta = delta;
   this.hasVisitList = hasVisitList;
+  this.maxItration = maxItration;
 }
 
 IDS.prototype.execute = function () {
@@ -44534,8 +44545,9 @@ IDS.prototype.execute = function () {
   var result;
 
   while (true) {
+    console.log(result);
     var dfs = void 0;
-    if (!this.hasVisitList) dfs = new _DFS.default(this.initial, this.goal, this.empty, i);else dfs = new _DFSCustom.default(this.initial, this.goal, this.empty, i);
+    if (!this.hasVisitList) dfs = new _DFS.default(this.initial, this.goal, this.empty, i, this.maxItration - (result && result.numberOfGoalTests ? result.numberOfGoalTests : 0));else dfs = new _DFSCustom.default(this.initial, this.goal, this.empty, i, this.maxItration - (result && result.numberOfGoalTests ? result.numberOfGoalTests : 0));
     i += this.delta;
     var res = dfs.execute();
     if (!result) result = res;else {
@@ -44546,7 +44558,7 @@ IDS.prototype.execute = function () {
       result.maxQueueSize = Math.max(res.maxQueueSize, result.maxQueueSize);
       result.numberOfExpandedNodes += res.numberOfExpandedNodes;
       result.numberOfNodesDroppedByVisit += res.numberOfNodesDroppedByVisit;
-      result.numberOfGoalTests += res.numberOfNodesDroppedByVisit;
+      result.numberOfGoalTests += res.numberOfGoalTests;
       result.totalTime = Date.now() - timeStart;
     } // console.log(res.path);
 
@@ -44570,8 +44582,8 @@ var _InformedSearch = _interopRequireDefault(require("./InformedSearch.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var BFS = function BFS(initial, goal, empty) {
-  _InformedSearch.default.call(this, initial, goal, empty);
+var BFS = function BFS(initial, goal, empty, maxItration) {
+  _InformedSearch.default.call(this, initial, goal, empty, maxItration);
 };
 
 BFS.prototype = Object.create(_InformedSearch.default.prototype);
@@ -44596,8 +44608,8 @@ var _InformedSearch = _interopRequireDefault(require("./InformedSearch.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Greedy = function Greedy(initial, goal, empty) {
-  _InformedSearch.default.call(this, initial, goal, empty);
+var Greedy = function Greedy(initial, goal, empty, maxItration) {
+  _InformedSearch.default.call(this, initial, goal, empty, maxItration);
 };
 
 Greedy.prototype = Object.create(_InformedSearch.default.prototype);
@@ -44614,7 +44626,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.GameFactoryConsumer = exports.getSolutionBatch = exports.isSolvable = void 0;
+exports.default = exports.GameFactoryConsumer = exports.isSolvable = void 0;
 
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
@@ -44716,10 +44728,6 @@ var isSolvable = function isSolvable(puzzle) {
 };
 
 exports.isSolvable = isSolvable;
-
-var getSolutionBatch = function getSolutionBatch(algrthm) {};
-
-exports.getSolutionBatch = getSolutionBatch;
 
 var genratePuzzle = function genratePuzzle(arr, event, nn1) {
   // return [5, 8, 3, 6, 7, 4, 1, 0, 2]
@@ -44957,38 +44965,38 @@ var GameFactory = /*#__PURE__*/function (_Component) {
         }, 100);
       });
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "getSolutionBatch", function (algrthm, depth, delta) {
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "getSolutionBatch", function (algrthm, depth, delta, maxItration) {
       var init = convertState(_this.state.numbers, _this.state.n);
       var goal = createGoalState(_this.state.n);
       var solver = {};
 
       switch (algrthm) {
         case 'Breadth':
-          solver = new _BFS.default(init, goal, 0);
+          solver = new _BFS.default(init, goal, 0, maxItration);
           break;
 
         case 'A*':
-          solver = new _AStar.default(init, goal, 0);
+          solver = new _AStar.default(init, goal, 0, maxItration);
           break;
 
         case 'Depth':
-          solver = new _DFS.default(init, goal, 0, depth);
+          solver = new _DFS.default(init, goal, 0, depth, maxItration);
           break;
 
         case 'DepthCustom':
-          solver = new _DFSCustom.default(init, goal, 0, depth);
+          solver = new _DFSCustom.default(init, goal, 0, depth, maxItration);
           break;
 
         case 'IDS':
-          solver = new _IDS.default(init, goal, 0, delta, false);
+          solver = new _IDS.default(init, goal, 0, delta, false, maxItration);
           break;
 
         case 'CustomIDS':
-          solver = new _IDS.default(init, goal, 0, delta, true);
+          solver = new _IDS.default(init, goal, 0, delta, true, maxItration);
           break;
 
         case 'Greedy':
-          solver = new _Greedy.default(init, goal, 0);
+          solver = new _Greedy.default(init, goal, 0, maxItration);
           break;
       }
 
@@ -45090,8 +45098,8 @@ var GameFactory = /*#__PURE__*/function (_Component) {
           break;
       }
 
-      var result = solver.execute();
-      console.log(result);
+      var result = solver.execute(); // console.log(result);
+
       if (result) return result;else {
         return [];
       }
@@ -46258,21 +46266,23 @@ var Game = /*#__PURE__*/function (_Component) {
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "generateBatch", function () {
       var depth = prompt("Enter depth for depth first search");
       var delta = prompt("Enter delta for IDS");
+      var maxItration = prompt("Enter max number of goal tests per algorithm");
       var x = "Algorithm, Solution depth , Number of expanded nodes,  Number of nodes dropped by closed list, Number of times goal test was excuted , Max number of nodes stored in memory, Number of nodes stored in closed list, Max number of nodes stored in fringe , Solution Found in";
-      if (depth === "" || depth === null || delta === "" || delta === null) return;
+      if (depth === "" || depth === null || delta === "" || maxItration === null || maxItration === "" || maxItration === null) return;
       depth = parseInt(depth);
       delta = parseInt(delta);
+      maxItration = parseInt(maxItration);
 
       for (var i = 0; i < algorithms.length; i++) {
-        var result = _this.props.getSolutionBatch(algorithms[i].value, depth, delta);
+        // console.log(depth + " " + delta + " " + algorithms[i].value);
+        var result = _this.props.getSolutionBatch(algorithms[i].value, depth, delta, maxItration); // if(result.path)
+
 
         x += "\n ".concat(algorithms[i].value, ", ").concat(result.depth, ", ").concat(result.numberOfExpandedNodes, ", ").concat(result.numberOfNodesDroppedByVisit, ", ").concat(result.numberOfGoalTests, ", ").concat(result.maxSize, ", ").concat(result.visitedSize, ", ").concat(result.maxQueueSize, ", ").concat(result.totalTime);
       }
 
-      x += "\n initial state";
-      console.log(_this.props.numbers + " ");
-      console.log(_this.props.numbers + " ");
-      x += "\n".concat((_this.props.numbers + "").replace(/,/g, ' '));
+      x += "\n initial state, max depth, IDS increment, max iteration per algorithm";
+      x += "\n".concat((_this.props.numbers + "").replace(/,/g, ' '), ",").concat(depth, ",").concat(delta, ",").concat(maxItration);
       (0, _download.default)("Batch.csv", x);
     });
     return _this;
@@ -46649,7 +46659,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57439" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58500" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
