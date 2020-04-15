@@ -1,11 +1,12 @@
 import DFS from './DFS';
 import DFSCustomVisilList from './DFSCustom';
-function IDS(initial, goal, empty, delta,hasVisitList) {
+function IDS(initial, goal, empty, delta, hasVisitList, maxItration) {
   this.initial = initial;
   this.goal = goal;
   this.empty = empty;
   this.delta = delta;
   this.hasVisitList = hasVisitList;
+  this.maxItration = maxItration;
 }
 
 IDS.prototype.execute = function () {
@@ -24,11 +25,13 @@ IDS.prototype.execute = function () {
   let timeStart = Date.now();
   let result;
   while (true) {
+    console.log(result);
+    
     let dfs;
-    if(!this.hasVisitList)
-      dfs  = new DFS(this.initial, this.goal, this.empty, i);
+    if (!this.hasVisitList)
+      dfs = new DFS(this.initial, this.goal, this.empty, i, this.maxItration - (result && result.numberOfGoalTests ? result.numberOfGoalTests : 0));
     else
-      dfs  = new DFSCustomVisilList(this.initial, this.goal, this.empty, i)
+      dfs = new DFSCustomVisilList(this.initial, this.goal, this.empty, i, this.maxItration - (result && result.numberOfGoalTests ? result.numberOfGoalTests : 0))
     i += this.delta;
     let res = dfs.execute();
     if (!result)
@@ -41,7 +44,7 @@ IDS.prototype.execute = function () {
       result.maxQueueSize = Math.max(res.maxQueueSize, result.maxQueueSize);
       result.numberOfExpandedNodes += res.numberOfExpandedNodes;
       result.numberOfNodesDroppedByVisit += res.numberOfNodesDroppedByVisit;
-      result.numberOfGoalTests += res.numberOfNodesDroppedByVisit;
+      result.numberOfGoalTests += res.numberOfGoalTests;
       result.totalTime = Date.now() - timeStart;
     }
     // console.log(res.path);

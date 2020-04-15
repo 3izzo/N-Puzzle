@@ -74,20 +74,23 @@ export default class Game extends Component {
   generateBatch = () => {
     let depth = prompt("Enter depth for depth first search")
     let delta = prompt("Enter delta for IDS")
+    let maxItration = prompt("Enter max number of goal tests per algorithm")
     let x = "Algorithm, Solution depth , Number of expanded nodes,  Number of nodes dropped by closed list, Number of times goal test was excuted , Max number of nodes stored in memory, Number of nodes stored in closed list, Max number of nodes stored in fringe , Solution Found in"
-    if(depth ===""|| depth === null ||delta ===""|| delta === null)
+    if (depth === "" || depth === null || delta === "" || maxItration === null || maxItration === "" || maxItration === null)
       return
     depth = parseInt(depth);
     delta = parseInt(delta);
+    maxItration = parseInt(maxItration);
     for (let i = 0; i < algorithms.length; i++) {
-      let result = this.props.getSolutionBatch(algorithms[i].value,depth,delta)
-      x+= `\n ${algorithms[i].value}, ${result.depth}, ${result.numberOfExpandedNodes}, ${result.numberOfNodesDroppedByVisit}, ${result.numberOfGoalTests}, ${result.maxSize}, ${result.visitedSize}, ${result.maxQueueSize}, ${result.totalTime}`
+      // console.log(depth + " " + delta + " " + algorithms[i].value);
+
+      let result = this.props.getSolutionBatch(algorithms[i].value, depth, delta, maxItration)
+      // if(result.path)
+      x += `\n ${algorithms[i].value}, ${result.depth}, ${result.numberOfExpandedNodes}, ${result.numberOfNodesDroppedByVisit}, ${result.numberOfGoalTests}, ${result.maxSize}, ${result.visitedSize}, ${result.maxQueueSize}, ${result.totalTime}`
     }
-    x+=`\n initial state`
-    console.log(this.props.numbers+ " ");
-    console.log(this.props.numbers+ " ");
-    
-    x+= `\n${(this.props.numbers + "").replace(/,/g, ' ')}`
+    x += `\n initial state, max depth, IDS increment, max iteration per algorithm`
+
+    x += `\n${(this.props.numbers + "").replace(/,/g, ' ')},${depth},${delta},${maxItration}`
     download("Batch.csv", x)
   }
 

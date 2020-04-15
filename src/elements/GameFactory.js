@@ -57,9 +57,7 @@ const isSolvable = puzzle => {
     return parity % 2 == 0;
   }
 };
-const getSolutionBatch = (algrthm) => {
 
-}
 const genratePuzzle = (arr, event, nn1) => {
   // return [5, 8, 3, 6, 7, 4, 1, 0, 2]
   // return [5, 1, 7, 3, 9, 2, 11, 4, 13, 6, 15, 8, 0, 10, 14, 12]
@@ -334,7 +332,7 @@ class GameFactory extends Component {
         solver = new DFSCustomVisitList(init, goal, 0, this.state.maxDepth);
         break;
       case 'IDS':
-        solver = new IDS(init, goal, 0, this.state.delta,false);
+        solver = new IDS(init, goal, 0, this.state.delta, false);
         break;
       case 'CustomIDS':
         solver = new IDS(init, goal, 0, this.state.delta, true);
@@ -344,7 +342,7 @@ class GameFactory extends Component {
         break;
     }
     var result = solver.execute();
-    console.log(result);
+    // console.log(result);
 
     if (result)
       return result;
@@ -352,32 +350,32 @@ class GameFactory extends Component {
       return [];
     }
   }
-  getSolutionBatch = (algrthm , depth ,delta) => {
+  getSolutionBatch = (algrthm, depth, delta, maxItration) => {
     let init = convertState(this.state.numbers, this.state.n);
     let goal = createGoalState(this.state.n);
 
     let solver = {};
     switch (algrthm) {
       case 'Breadth':
-        solver = new BFS(init, goal, 0);
+        solver = new BFS(init, goal, 0, maxItration);
         break;
       case 'A*':
-        solver = new AStar(init, goal, 0);
+        solver = new AStar(init, goal, 0, maxItration);
         break;
       case 'Depth':
-        solver = new DFS(init, goal, 0, depth);
+        solver = new DFS(init, goal, 0, depth, maxItration);
         break;
       case 'DepthCustom':
-        solver = new DFSCustomVisitList(init, goal, 0, depth);
+        solver = new DFSCustomVisitList(init, goal, 0, depth, maxItration);
         break;
       case 'IDS':
-        solver = new IDS(init, goal, 0, delta,false);
+        solver = new IDS(init, goal, 0, delta, false, maxItration);
         break;
       case 'CustomIDS':
-        solver = new IDS(init, goal, 0, delta, true);
+        solver = new IDS(init, goal, 0, delta, true, maxItration);
         break;
       case 'Greedy':
-        solver = new Greedy(init, goal, 0);
+        solver = new Greedy(init, goal, 0, maxItration);
         break;
     }
     var result = solver.execute();
@@ -470,7 +468,7 @@ class GameFactory extends Component {
   }
 }
 
-export { isSolvable, getSolutionBatch };
+export { isSolvable };
 export const GameFactoryConsumer = ({ children }) => {
   return (
     <ValuesContext.Consumer>

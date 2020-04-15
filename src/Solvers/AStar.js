@@ -1,7 +1,7 @@
 import manhattanDistance from './Heuristic.js'
 import InformedSearch from './InformedSearch.js';
-const AStar = function (initial, goal, empty) {
-  InformedSearch.call(this, initial, goal, empty);
+const AStar = function (initial, goal, empty,maxItration) {
+  InformedSearch.call(this, initial, goal, empty,maxItration);
 }
 AStar.prototype = Object.create(InformedSearch.prototype)
 

@@ -2,13 +2,14 @@ import PriorityQueue from 'js-priority-queue';
 import HashSet from 'hashset';
 import SolverNode from './SolverNode.js';
 
-function InformedSearch(initial, goal, empty) {
+function InformedSearch(initial, goal, empty, maxItration) {
     this.idCounter = BigInt(0);
     this.numberOfExpandedNodes = 0;
     this.numberOfNodesDroppedByVisit = 0;
     this.initial = initial;
     this.goal = goal;
     this.empty = empty;
+    this.maxItration = maxItration;
     this.hasVisitList = true;
     this.queue = new PriorityQueue({
         comparator: function (a, b) {
@@ -37,8 +38,7 @@ InformedSearch.prototype.execute = function () {
         let current = this.queue.dequeue();
 
         numberOfGoalTests++;
-        if (current.strRepresentation === this.goal.strRepresentation)
-            {
+        if (current.strRepresentation === this.goal.strRepresentation) {
             return {
                 path: current.path,
                 depth: current.depth,
@@ -49,10 +49,21 @@ InformedSearch.prototype.execute = function () {
                 numberOfNodesDroppedByVisit: this.numberOfNodesDroppedByVisit,
                 numberOfGoalTests,
                 totalTime: Date.now() - timeStart,
-            };}
+            };
+        }
+        if(numberOfGoalTests == this.maxItration)
+            break;
         this.expandNode(current);
     }
-    return this;
+    return {
+        maxSize,
+        visitedSize: this.visited.length,
+        maxQueueSize,
+        numberOfExpandedNodes: this.numberOfExpandedNodes,
+        numberOfNodesDroppedByVisit: this.numberOfNodesDroppedByVisit,
+        numberOfGoalTests,
+        totalTime: Date.now() - timeStart,
+    };
 }
 InformedSearch.prototype.expandNode = function (node) {
 

@@ -1,8 +1,8 @@
 import PriorityQueue from 'js-priority-queue';
 import InformedSearch from './InformedSearch.js';
 import SolverNode from './SolverNode.js';
-const DFSCustomVisitList = function (initial, goal, empty, maxDepth) {
-  InformedSearch.call(this, initial, goal, empty);
+const DFSCustomVisitList = function (initial, goal, empty, maxDepth,maxItration) {
+  InformedSearch.call(this, initial, goal, empty,maxItration);
   this.maxDepth = maxDepth;
   this.queue = new PriorityQueue({
     comparator: function (a, b) {

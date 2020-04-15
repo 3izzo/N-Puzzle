@@ -1,7 +1,7 @@
 import PriorityQueue from 'js-priority-queue';
 import InformedSearch from './InformedSearch.js';
-const DFS = function (initial, goal, empty, maxDepth) {
-  InformedSearch.call(this, initial, goal, empty);
+const DFS = function (initial, goal, empty, maxDepth,maxItration) {
+  InformedSearch.call(this, initial, goal, empty,maxItration);
   this.maxDepth = maxDepth;
   this.queue = new PriorityQueue({
     comparator: function (a, b) {
