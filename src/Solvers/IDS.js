@@ -25,8 +25,7 @@ IDS.prototype.execute = function () {
   let timeStart = Date.now();
   let result;
   while (true) {
-    console.log(result);
-    
+
     let dfs;
     if (!this.hasVisitList)
       dfs = new DFS(this.initial, this.goal, this.empty, i, this.maxItration - (result && result.numberOfGoalTests ? result.numberOfGoalTests : 0));
@@ -46,6 +45,8 @@ IDS.prototype.execute = function () {
       result.numberOfNodesDroppedByVisit += res.numberOfNodesDroppedByVisit;
       result.numberOfGoalTests += res.numberOfGoalTests;
       result.totalTime = Date.now() - timeStart;
+      if (result.numberOfGoalTests >= this.maxItration)
+        return result;
     }
     // console.log(res.path);
 
